@@ -8,8 +8,8 @@ def index():
     posts = get_todays_recent_posts()
     return render_template('index.html', posts=posts)
 
-@app.route('/kids/<username>')
-def kids(username):
+@app.route('/profile/<username>')
+def profile(username):
     logged_in_username = session.get('username')
     user_being_viewed_username = username
 
@@ -121,29 +121,29 @@ def like_post(post_id):
     flash('Liked post.')
     return redirect(request.referrer)
 
-@app.route('/profile/<username>')
-def profile(username):
-    logged_in_username = session.get('username')
-    user_being_viewed_username = username
+# @app.route('/profile/<username>')
+# def profile(username):
+#     logged_in_username = session.get('username')
+#     user_being_viewed_username = username
 
-    user_being_viewed = User(user_being_viewed_username)
-    posts = user_being_viewed.get_recent_posts()
+#     user_being_viewed = User(user_being_viewed_username)
+#     posts = user_being_viewed.get_recent_posts()
 
-    similar = []
-    common = []
+#     similar = []
+#     common = []
 
-    if logged_in_username:
-        logged_in_user = User(logged_in_username)
+#     if logged_in_username:
+#         logged_in_user = User(logged_in_username)
 
-        if logged_in_user.username == user_being_viewed.username:
-            similar = logged_in_user.get_similar_users()
-        else:
-            common = logged_in_user.get_commonality_of_user(user_being_viewed)
+#         if logged_in_user.username == user_being_viewed.username:
+#             similar = logged_in_user.get_similar_users()
+#         else:
+#             common = logged_in_user.get_commonality_of_user(user_being_viewed)
 
-    return render_template(
-        'profile.html',
-        username=username,
-        posts=posts,
-        similar=similar,
-        common=common
-    )
+#     return render_template(
+#         'profile.html',
+#         username=username,
+#         posts=posts,
+#         similar=similar,
+#         common=common
+#     )
