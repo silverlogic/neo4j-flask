@@ -5,8 +5,8 @@ import os
 import uuid
 
 url = os.environ.get('GRAPHENEDB_URL', 'http://localhost:7474')
-username = os.environ.get('NEO4J_USERNAME')
-password = os.environ.get('NEO4J_PASSWORD')
+username = 'neo4j'
+password = '12345678'
 
 if username and password:
     authenticate(url.strip('http://'), username, password)
@@ -35,6 +35,39 @@ class User:
             return bcrypt.verify(password, user['password'])
         else:
             return False
+
+    def add_kid(self, name):
+        user = self.find()
+        kid = Node(
+            "Kid",
+            id=str(uuid.uuid4()),
+            name=name,
+            timestamp=timestamp(),
+            date=date()
+        )
+        graph.create(kid)
+        rel = Relationship(user, "HAS_KID", kid)
+        graph.create(rel)
+
+    # add goal to a kid    
+    def add_goal_to_kid(self, name, kid, kind, carrot, stick):
+        user = self.find()
+        goal = Node(
+            "Goal",
+            id=str(uuid.uuid4()),
+            title=name,
+            kind=kind,
+            carrot=carrot,
+            stick=stick,
+            timestamp=timestamp(),
+            date=date()
+        )
+        graph.create(goal)
+        relUserSetsGoal = Relationship(user, "SET_GOAL", goal)
+        graph.create(relUserSetsGoal)
+        relKidHasGoal = Relationship(kid, "HAS_GOAL", goal)
+        graph.create(relKidHasGoal)
+  
 
     def add_post(self, title, tags, text):
         user = self.find()
@@ -97,6 +130,16 @@ class User:
         """
 
         return graph.cypher.execute(query, they=other.username, you=self.username)[0]
+
+    def get_kids(self):
+        # Find how many of the logged-in user's posts the other user
+        # has liked and which tags they've both blogged about.
+        query = """
+        MATCH (you:User {username: {you} })
+        OPTIONAL MATCH (you)-[:HAS_KID]->(kid:Kid)
+        RETURN collect(kid.name) AS name
+        """
+        return graph.cypher.execute(query, you=self.username)
 
 def get_todays_recent_posts():
     query = """

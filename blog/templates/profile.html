@@ -5,12 +5,11 @@
 
 {% if session.username %}
     {% if session.username == username %}
-        <h3>Users similar to you:</h3>
+        <h3>Your kids:</h3>
 
-          {% for user in similar %}
+          {% for kid in kids %}
             <p>
-            <a href="{{ url_for('profile', username=user.similar_user) }}">{{ user.similar_user }}</a>
-            also blogs about <i>{{ ", ".join(user.tags) }}</i>
+            {{ ", ".join(kid.name) }}
             </p>
           {% else %}
             <p>There aren't any users who've blogged about the same tags as you!</p>
@@ -20,7 +19,7 @@
 
     {% else %}
 
-  <p>{{ username }} has liked {{ common.likes }} of your posts and
+  <p>{{ username }} has liked {{ common.likes }} of your {{kids}} and
       {% if common.tags %}
       also blogs about <i>{{ ", ".join(common.tags) }}</i>
       {% else %}

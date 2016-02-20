@@ -8,6 +8,36 @@ def index():
     posts = get_todays_recent_posts()
     return render_template('index.html', posts=posts)
 
+@app.route('/kids/<username>')
+def kids(username):
+    logged_in_username = session.get('username')
+    user_being_viewed_username = username
+
+    user_being_viewed = User(user_being_viewed_username)
+    posts = user_being_viewed.get_recent_posts()
+
+    similar = []
+    common = []
+    kids = []
+
+    if logged_in_username:
+        logged_in_user = User(logged_in_username)
+
+        if logged_in_user.username == user_being_viewed.username:
+            similar = logged_in_user.get_similar_users()
+            kids = logged_in_user.get_kids()
+        else:
+            common = logged_in_user.get_commonality_of_user(user_being_viewed)
+
+    return render_template(
+        'profile.html',
+        username=username,
+        posts=posts,
+        similar=similar,
+        kids=kids,
+        common=common
+    )
+
 @app.route('/register', methods=['GET','POST'])
 def register():
     if request.method == 'POST':
