@@ -3,23 +3,21 @@
 
 <h2>Home</h2>
   {% if session.username %}
-    <h3>Share New Post</h3>
-    <form action="{{ url_for('add_post') }}" method="post">
+    <h3>Add a kid</h3>
+    <form action="{{ url_for('add_kid') }}" method="post">
         <dl>
-            <dt>Title:</dt>
-            <dd><input type="text" size="30" name="title"></dd>
-            <dt>Tags (separated by commas):</dt>
-            <dd><input type="text" size="30" name="tags"></dd>
-            <dt>Text:</dt>
-            <dd><textarea name="text" rows="5" cols="40"></textarea></dd>
+            <dt>Name:</dt>
+            <dd><input type="text" size="30" name="name"></dd>
         </dl>
         <input type="submit" value="Share">
     </form>
+    <h3>Add a goal to an existing kid</h3>
+    <h3>Add a fitbit to an existing kid (will create associated goal)</h3>
   {% endif %}
 
 <br>
 
-<h3>Today's Recent Posts</h3>
+<!-- <h3>Today's Recent Posts</h3>
 {% include "display_posts.html" %}
 
-{% endblock %}
+{% endblock %} -->

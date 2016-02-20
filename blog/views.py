@@ -78,6 +78,18 @@ def logout():
     flash('Logged out.')
     return redirect(url_for('index'))
 
+@app.route('/add_kid', methods=['POST'])
+def add_kid():
+    name = request.form['name']
+
+    if not name:
+        flash('You must give your kid a name.')
+    else:
+        User(session['username']).add_kid(name)
+        flash('adding kid')
+
+    return redirect(url_for('index'))
+
 @app.route('/add_post', methods=['POST'])
 def add_post():
     title = request.form['title']
