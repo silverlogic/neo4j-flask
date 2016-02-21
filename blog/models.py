@@ -49,25 +49,27 @@ class User:
         rel = Relationship(user, "HAS_KID", kid)
         graph.create(rel)
 
-    # add goal to a kid    
-    def add_goal_to_kid(self, name, kid, kind, carrot, stick):
+    def add_goal(self, goalName, kidName, carrot, stick):
         user = self.find()
         goal = Node(
             "Goal",
             id=str(uuid.uuid4()),
-            title=name,
-            kind=kind,
+            goalName=goalName,
+            kidName=kidName,
             carrot=carrot,
             stick=stick,
             timestamp=timestamp(),
             date=date()
         )
-        graph.create(goal)
-        relUserSetsGoal = Relationship(user, "SET_GOAL", goal)
-        graph.create(relUserSetsGoal)
-        relKidHasGoal = Relationship(kid, "HAS_GOAL", goal)
-        graph.create(relKidHasGoal)
-  
+        query = """
+        MATCH (user:User {name: {username} })-[:HAS_KID]->(kid:Kid {name: {kidName} })
+        MERGE (user)-[:CREATED]->(goal:Goal {name:goalName})
+        MERGE (kid)-[:HAS_GOAL]->(goal)
+        SET goal.carrot = {carrot}  //string
+        SET goal.stick = {stick}    // string
+        SET goal.amount = {amount}  // convert to int
+        """
+        return graph.cypher.execute(query, username=self.username, amount=amount, kidName=kidName, goalName=goalName, carrot=carrot, stick=stick)
 
     def add_post(self, title, tags, text):
         user = self.find()
