@@ -59,6 +59,7 @@ class User:
             date=date()
         )
         graph.create(goal)
+        graph.MATCH
 
     def add_post(self, title, tags, text):
         user = self.find()
