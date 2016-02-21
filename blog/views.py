@@ -90,6 +90,18 @@ def add_kid():
 
     return redirect(url_for('index'))
 
+@app.route('/add_goal', methods=['POST'])
+def add_goal():
+    name = request.form['name']
+
+    if not name:
+        flash('You must give your kid a name.')
+    else:
+        User(session['username']).add_goal(name)
+        flash('adding kid')
+
+    return redirect(url_for('index'))
+
 @app.route('/add_post', methods=['POST'])
 def add_post():
     title = request.form['title']
@@ -107,27 +119,6 @@ def add_post():
         User(session['username']).add_post(title, tags, text)
 
     return redirect(url_for('index'))
-
-@app.route('/add_goal', methods=['POST'])
-def add_goal():
-    goalName = request.form['goalName']
-    kidName = request.form['kidName']
-    amount = request.form['amount']
-    carrot = request.form['carrot']
-    stick = request.form['stick']
-
-    if not goalName or not kidName or not amount:
-        if not goalName:
-            flash('You must give your goal a goalName.')
-        if not kidName:
-            flash('You must give your goal at least one kid.')
-        if not amount:
-            flash('You must give your goal an amount.')
-    else:
-        User(session['username']).add_goal(goalName, kidName, amount, carrot, stick)
-
-    return redirect(url_for('index'))
-
 
 @app.route('/like_post/<post_id>')
 def like_post(post_id):
