@@ -1,6 +1,8 @@
 from .views import app
-from .models import graph
+from .models import driver
 
-graph.schema.create_uniqueness_constraint("User", "username")
-graph.schema.create_uniqueness_constraint("Tag", "name")
-graph.schema.create_uniqueness_constraint("Post", "id")
+session = driver.session()
+session.run("CREATE CONSTRAINT ON (n:User) ASSERT n.username IS UNIQUE;")
+session.run("CREATE CONSTRAINT ON (n:Tag) ASSERT n.name IS UNIQUE;")
+session.run("CREATE CONSTRAINT ON (n:Post) ASSERT n.id IS UNIQUE;")
+session.close()
